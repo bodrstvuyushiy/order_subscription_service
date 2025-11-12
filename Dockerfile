@@ -1,26 +1,24 @@
-FROM python:3.9-alpine3.16
+FROM python:3.12-slim
 
-WORKDIR /service
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    POETRY_HOME="/opt/poetry" \
+    POETRY_NO_INTERACTION=1 \
+    POETRY_VIRTUALENVS_CREATE=false \
+    PATH="/opt/poetry/bin:$PATH"
 
-RUN apk add --no-cache --virtual .build-deps \
-    gcc \
-    python3-dev \
-    musl-dev \
-    postgresql-dev \
-    && apk add --no-cache libffi-dev
+WORKDIR /app
 
-RUN apk add --no-cache postgresql-client build-base
+RUN pip install --no-cache-dir poetry
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt && \
-    apk del .build-deps
+COPY pyproject.toml poetry.lock ./
 
-RUN adduser --disabled-password admin
+RUN poetry install --only main --no-root
 
-COPY . /service
+COPY src ./src
 
-RUN chown -R admin /service
-
-USER admin
+WORKDIR /app/src
 
 EXPOSE 8000
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

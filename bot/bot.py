@@ -10,16 +10,17 @@ TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 DB_USER = os.getenv("POSTGRES_USER")
 DB_PASS = os.getenv("POSTGRES_PASSWORD")
 DB_HOST = os.getenv("POSTGRES_HOST")
-DB_PORT = os.getenv("POSTGRES_PORT", "5432")
+DB_PORT = os.getenv("POSTGRES_PORT")
 DB_NAME = os.getenv("POSTGRES_DB")
 
-engine = create_engine(f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
+engine = create_engine(
+    f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+)
 metadata = MetaData(bind=engine)
 users = Table("users_customuser", metadata, autoload_with=engine)
 
 
 def start(update):
-    tg_id = update.message.chat_id
     update.message.reply_text("Привет! Отправь свой номер телефона для регистрации.")
 
 
