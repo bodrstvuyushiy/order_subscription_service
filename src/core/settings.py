@@ -1,13 +1,17 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv(BASE_DIR.parent / ".env")
+load_dotenv(BASE_DIR.parent / ".env.local", override=True)
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-REDIS_URL = os.getenv("REDIS_LOCAL_URL", os.getenv("REDIS_URL"))
+REDIS_URL = os.getenv("REDIS_LOCAL_URL") or os.getenv("REDIS_URL")
 
 
 DEBUG = True

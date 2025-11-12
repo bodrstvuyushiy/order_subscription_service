@@ -1,4 +1,5 @@
 !.env.example
+!.env.local.example
 !.vscode/extensions.json
 !.vscode/settings.json
 *.crt
